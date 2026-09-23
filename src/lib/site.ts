@@ -399,9 +399,8 @@ export const education = [
  * The timezone appears in none of those sources — it was confirmed directly by
  * Mabel as Lagos / West African Time.
  *
- * `registerUrl` is intentionally empty: no public registration link exists in
- * any source. While it is blank the page routes people to the enquiry form
- * rather than inventing a destination. Fill it in and the button switches.
+ * Registration happens on /insight-room itself — that page is the destination
+ * promoted on social, so there is no external sign-up link to store.
  */
 export const insightRoom = {
   name: "MAA Insight Room",
@@ -411,7 +410,6 @@ export const insightRoom = {
   time: "7:00 p.m. WAT (Lagos)",
   cost: "Free to attend — registration required",
   firstSession: "7 August 2026",
-  registerUrl: "",
   audience: ["Professionals", "Founders", "Business leaders", "Emerging talents"],
   topics: [
     "Business strategy",

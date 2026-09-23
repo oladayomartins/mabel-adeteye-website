@@ -216,6 +216,19 @@ have locked out anyone over 40 — and the session is aimed at business leaders,
 who skew older. `41 and above` was added. Remove it from `AGE_BRACKETS` if the
 cut-off was deliberate.
 
+### This page is the campaign destination
+
+`/insight-room` is the URL promoted on social, and registration happens on the
+page — there is no external sign-up link. Keep it that way: every CTA on the
+site points here rather than off to a third-party form.
+
+**Redirect hops matter here.** The apex currently 308s to `www`, so
+`http://mabeladeteye.com/insight-room` costs two redirects before a byte of the
+page is served. On mobile networks, on the most conversion-sensitive page, that
+is worth removing — set the apex as the primary domain in Vercel so it answers
+200 directly. It also resolves the canonical mismatch, since `NEXT_PUBLIC_SITE_URL`
+is already the apex.
+
 The Mentorship page carries a **promo only**; the detail and the form live here,
 so the two pages do not compete on the same content.
 
