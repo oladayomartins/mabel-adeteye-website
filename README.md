@@ -387,8 +387,18 @@ is what makes the row line up. Fitting to a *box* rather than a fixed height als
 evens out optical weight — without a width cap, British Airways (6.5:1) would run
 five times wider than Etisalat (0.9:1).
 
-The grid uses 2 / 4 / 6 columns, all of which divide the **12** brands evenly, so
-no row is ever left short. Revisit those numbers whenever the count changes.
+It is a **single continuously scrolling row**, not a grid. The track renders the
+list twice and translates by exactly `-50%`, so the loop is seamless; the second
+copy is `aria-hidden` with empty alt text, so each brand is announced and crawled
+once. Edges are masked rather than hard-cut, so logos fade in and out.
+
+Logos load **eagerly**, not lazily: in a moving row every logo comes into view
+within seconds, and lazy ones pop in blank as the track scrolls. They are a few
+KB each.
+
+Hovering or focusing pauses it. WCAG 2.2.2 asks for a way to pause content that
+moves for more than five seconds; delete the `:hover`/`:focus-within` rules if
+the row should never stop.
 
 Sources without transparency carry `flatBg: true` and render with
 `mix-blend-mode: darken`, which drops a near-white backdrop into our tint while
