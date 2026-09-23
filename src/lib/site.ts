@@ -118,6 +118,13 @@ export const assets = {
   /** MAA Insight Room masthead lockup (1140x480, burgundy, transparent edges). */
   insightRoomBanner:
     "https://ik.imagekit.io/b492iukcb/MAA%20Personal%20Logo%20(1080%20x%201920%20px)%20(1280%20x%20240%20px).png",
+  /**
+   * Cartoon avatar for the site assistant. Background removed by ImageKit's AI
+   * (`e-bgremove`), then cropped to head-and-shoulders — a full-body figure is
+   * unreadable at the 56px launcher size.
+   */
+  assistantAvatar:
+    "https://ik.imagekit.io/b492iukcb/transform-my-image-into-a-cartoon-style.jpg?tr=e-bgremove:cm-extract,x-330,y-20,w-700,h-700:w-240",
   /** Editorial portrait used for the Insight Room parallax band (720x1080). */
   insightRoomPortrait:
     "https://ik.imagekit.io/b492iukcb/PHOTO-2025-08-31-20-04-49%20(1).jpg",

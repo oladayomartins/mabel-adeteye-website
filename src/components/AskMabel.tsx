@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { person } from "@/lib/site";
+import { assets, person } from "@/lib/site";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -96,12 +97,34 @@ export default function AskMabel() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls="ask-mabel-panel"
-        className="fixed bottom-4 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[color:var(--color-burgundy)] text-white shadow-[0_6px_28px_rgba(20,20,20,0.28)] transition-transform hover:scale-105"
+        className={`fixed bottom-4 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[color:var(--color-burgundy)] text-white shadow-[0_6px_28px_rgba(20,20,20,0.28)] ring-2 ring-white/70 transition-shadow hover:shadow-[0_10px_34px_rgba(107,18,32,0.42)] ${
+          open ? "" : "assistant-launcher"
+        }`}
       >
         <span className="sr-only">{open ? "Close assistant" : "Ask about Mabel"}</span>
-        <span aria-hidden="true" className="text-xl leading-none">
-          {open ? "×" : "✦"}
-        </span>
+
+        {open ? (
+          <span aria-hidden="true" className="text-2xl leading-none">
+            ×
+          </span>
+        ) : (
+          <>
+            {/* Outward ping, behind the avatar. */}
+            <span
+              aria-hidden="true"
+              className="assistant-pulse absolute inset-0 rounded-full bg-[color:var(--color-burgundy)]"
+            />
+            <Image
+              src={assets.assistantAvatar}
+              alt=""
+              width={240}
+              height={240}
+              priority
+              sizes="56px"
+              className="relative h-full w-full rounded-full object-cover"
+            />
+          </>
+        )}
       </button>
 
       <div

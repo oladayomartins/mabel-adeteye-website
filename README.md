@@ -280,6 +280,18 @@ and salary questions, declined to invent a mentoring fee, and pointed to
 determined prompt can sometimes move any model off-script. Re-test the refusals
 after changing the prompt.
 
+### The launcher
+
+A cartoon avatar of Mabel, background removed by ImageKit's AI (`e-bgremove`)
+and cropped to head-and-shoulders — the full figure is unreadable at 56px. It
+bobs slowly with an outward pulse behind it, so it reads as alive rather than as
+a static badge.
+
+The bob sits on the button and the pulse on a child element: one element cannot
+run two different `transform` animations. Both are transform/opacity only, and
+both stop under `prefers-reduced-motion`. The avatar is replaced by a close
+glyph while the panel is open, so nothing animates behind an open dialog.
+
 ### The key is server-side
 
 `GEMINI_API_KEY` has **no** `NEXT_PUBLIC_` prefix, so Next cannot inline it into
