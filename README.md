@@ -184,6 +184,26 @@ Each upcoming date also emits its own `Event` node with `superEvent` pointing at
 the `EventSeries`, so assistants get a dated answer to "when is the next
 session?", not just a recurrence rule.
 
+### Campaign CTAs
+
+Campaign traffic lands cold and needs the action immediately, so there are three
+routes to the form: a button above the fold in the masthead (`#hero-cta`), one
+inside the next-session card, and a sticky mobile bar.
+
+`StickyRegisterBar` shows only when **neither** the hero button nor the form is
+on screen — a floating CTA competing with a visible one is clutter. It uses a
+passive, rAF-throttled scroll listener rather than IntersectionObserver: two
+observer implementations were tried first and appeared to fire once then go
+silent. (That diagnosis was partly wrong — the test selector was matching the
+mobile nav drawer, which shares `fixed inset-x-0 bottom-0`. The scroll version is
+verified working, so it stays; the lesson is to select test targets precisely.)
+
+### Masthead
+
+The banner lockup is the `<h1>`: its `alt` is the heading text, so the brand
+image and the document semantics are the same element rather than duplicating
+"MAA Insight Room" as both picture and text.
+
 ### Registration form
 
 `InsightRoomForm` — three steps (About you · Your work · Your question) with a

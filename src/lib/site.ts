@@ -115,7 +115,16 @@ export const assets = {
    */
   heroSquare:
     "https://ik.imagekit.io/digit/Mabel/Mabel-Aladenusi.png?tr=w-520,h-520,fo-face",
+  /** MAA Insight Room masthead lockup (1140x480, burgundy, transparent edges). */
+  insightRoomBanner:
+    "https://ik.imagekit.io/b492iukcb/MAA%20Personal%20Logo%20(1080%20x%201920%20px)%20(1280%20x%20240%20px).png",
+  /** Editorial portrait used for the Insight Room parallax band (720x1080). */
+  insightRoomPortrait:
+    "https://ik.imagekit.io/b492iukcb/PHOTO-2025-08-31-20-04-49%20(1).jpg",
 } as const;
+
+export const insightRoomBannerSize = { width: 1140, height: 480 } as const;
+export const insightRoomPortraitSize = { width: 720, height: 1080 } as const;
 
 /** True intrinsic size of the source portrait (543x750, transparent PNG). */
 export const heroSize = { width: 543, height: 750 } as const;
