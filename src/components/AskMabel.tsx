@@ -92,6 +92,27 @@ export default function AskMabel() {
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages, busy, sheet?.height]);
 
+  /**
+   * The launcher steps aside while the visitor is filling in one of the site's
+   * forms: it sits in the bottom corner, right over most submit buttons, and a
+   * bobbing face is the last thing someone mid-form needs.
+   */
+  const [inForm, setInForm] = useState(false);
+  useEffect(() => {
+    const check = () => {
+      const el = document.activeElement;
+      setInForm(!!el?.closest("form") && !el.closest("#ask-mabel-panel"));
+    };
+    // focusout fires before focus lands elsewhere; wait a tick to read the result.
+    const onFocusOut = () => setTimeout(check);
+    document.addEventListener("focusin", check);
+    document.addEventListener("focusout", onFocusOut);
+    return () => {
+      document.removeEventListener("focusin", check);
+      document.removeEventListener("focusout", onFocusOut);
+    };
+  }, []);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
@@ -154,7 +175,7 @@ export default function AskMabel() {
         aria-expanded={open}
         aria-controls="ask-mabel-panel"
         className={`fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-50 h-14 w-14 ${
-          open ? "hidden sm:flex" : "flex"
+          open ? "hidden sm:flex" : inForm ? "hidden" : "flex"
         } items-center justify-center rounded-full bg-[color:var(--color-burgundy)] text-white shadow-[0_6px_28px_rgba(20,20,20,0.28)] ring-2 ring-white/70 transition-shadow hover:shadow-[0_10px_34px_rgba(107,18,32,0.42)] ${
           open ? "" : "assistant-launcher"
         }`}

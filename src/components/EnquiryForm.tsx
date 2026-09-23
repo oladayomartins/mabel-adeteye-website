@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { focusNextField } from "@/lib/forms";
 import { enquiryTopics, person } from "@/lib/site";
 
 /**
@@ -108,7 +109,7 @@ export default function EnquiryForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="card" noValidate={false}>
+    <form onSubmit={onSubmit} onKeyDown={focusNextField} className="card">
       <fieldset>
         <legend className="eyebrow">What is this about?</legend>
         <div className="mt-4 grid grid-cols-2 gap-3">
@@ -139,7 +140,7 @@ export default function EnquiryForm() {
         <label className="sr-only" htmlFor="name">
           Name
         </label>
-        <input id="name" name="name" required autoComplete="name" placeholder="Name" className="field" />
+        <input id="name" name="name" required autoComplete="name" placeholder="Name" enterKeyHint="next" className="field" />
 
         <label className="sr-only" htmlFor="organisation">
           Organisation
@@ -147,7 +148,7 @@ export default function EnquiryForm() {
         <input
           id="organisation"
           name="organisation"
-          autoComplete="organization"
+          autoComplete="organization" enterKeyHint="next"
           placeholder="Organisation"
           className="field"
         />
@@ -161,7 +162,7 @@ export default function EnquiryForm() {
           type="email"
           required
           inputMode="email"
-          autoComplete="email"
+          autoComplete="email" enterKeyHint="next"
           placeholder="Email"
           className="field"
         />

@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { focusNextField, reveal } from "@/lib/forms";
 import { person } from "@/lib/site";
 
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
@@ -75,7 +76,7 @@ function Choice({
   invalid?: boolean;
 }) {
   return (
-    <fieldset>
+    <fieldset id={`ir-${name}`}>
       <legend className="eyebrow">{legend}</legend>
       <div
         className={`mt-3 grid gap-2 ${columns === 2 ? "grid-cols-2" : "grid-cols-1 sm:grid-cols-2"}`}
@@ -116,6 +117,22 @@ export default function InsightRoomForm({ sessionLabel }: { sessionLabel: string
   const [showErrors, setShowErrors] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
 
+  const form = useRef<HTMLFormElement>(null);
+  const heading = useRef<HTMLParagraphElement>(null);
+  const firstRender = useRef(true);
+
+  // A new step replaces the fields under the visitor's thumb, and the step
+  // lengths differ, so without this they land below the form looking at the
+  // buttons. Bring the top of the step back into view and move focus to its
+  // label, so screen readers announce the step too.
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    reveal(form.current, heading.current);
+  }, [step]);
+
   const set = (key: keyof Values) => (v: string) =>
     setValues((prev) => ({ ...prev, [key]: v }));
 
@@ -145,9 +162,17 @@ export default function InsightRoomForm({ sessionLabel }: { sessionLabel: string
     ].filter(Boolean) as string[];
   }, [step, values, overLimit]);
 
+  /** Takes the visitor to the first field that still needs an answer. */
+  const showFirstMissing = () => {
+    setShowErrors(true);
+    const id = `ir-${missing[0].replace("-length", "")}`;
+    const el = document.getElementById(id);
+    reveal(el, el?.matches("fieldset") ? el.querySelector("input") : el);
+  };
+
   const next = () => {
     if (missing.length) {
-      setShowErrors(true);
+      showFirstMissing();
       return;
     }
     setShowErrors(false);
@@ -162,7 +187,7 @@ export default function InsightRoomForm({ sessionLabel }: { sessionLabel: string
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (missing.length) {
-      setShowErrors(true);
+      showFirstMissing();
       return;
     }
 
@@ -239,10 +264,18 @@ export default function InsightRoomForm({ sessionLabel }: { sessionLabel: string
   const invalid = (field: string) => showErrors && missing.includes(field);
 
   return (
-    <form onSubmit={onSubmit} className="card">
+    <form
+      ref={form}
+      onSubmit={onSubmit}
+      onKeyDown={(e) => {
+        // Enter on the last typed field of an early step means "continue".
+        if (focusNextField(e) === false && step < STEPS.length - 1) next();
+      }}
+      className="card"
+    >
       {/* Progress */}
       <div className="flex items-center justify-between gap-4">
-        <p className="eyebrow">
+        <p ref={heading} tabIndex={-1} aria-live="polite" className="eyebrow outline-none">
           Step {step + 1} of {STEPS.length} · {STEPS[step]}
         </p>
         <span className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-[color:var(--color-muted)]">
@@ -270,6 +303,7 @@ export default function InsightRoomForm({ sessionLabel }: { sessionLabel: string
                   onChange={(e) => set("name")(e.target.value)}
                   aria-invalid={invalid("name") || undefined}
                   autoComplete="name"
+                  enterKeyHint="next"
                   className="field mt-2"
                   placeholder="Your full name"
                 />
@@ -286,6 +320,7 @@ export default function InsightRoomForm({ sessionLabel }: { sessionLabel: string
                   onChange={(e) => set("email")(e.target.value)}
                   aria-invalid={invalid("email") || undefined}
                   autoComplete="email"
+                  enterKeyHint="next"
                   className="field mt-2"
                   placeholder="you@example.com"
                 />
@@ -321,6 +356,7 @@ export default function InsightRoomForm({ sessionLabel }: { sessionLabel: string
                 onChange={(e) => set("location")(e.target.value)}
                 aria-invalid={invalid("location") || undefined}
                 autoComplete="address-level2"
+                enterKeyHint="next"
                 className="field mt-2"
                 placeholder="City and country"
               />
@@ -412,17 +448,23 @@ export default function InsightRoomForm({ sessionLabel }: { sessionLabel: string
 
       <div className="mt-7 flex flex-col gap-3 sm:flex-row">
         {step > 0 ? (
-          <button type="button" onClick={back} className="btn btn-secondary sm:w-auto">
+          <button key="back" type="button" onClick={back} className="btn btn-secondary sm:w-auto">
             Back
           </button>
         ) : null}
 
         {step < STEPS.length - 1 ? (
-          <button type="button" onClick={next} className="btn btn-primary flex-1">
+          /*
+           * Distinct keys matter: without them React reuses this <button> for
+           * the submit one below, flips its type mid-click, and the same tap
+           * that opens the last step also submits it.
+           */
+          <button key="continue" type="button" onClick={next} className="btn btn-primary flex-1">
             Continue
           </button>
         ) : (
           <button
+            key="submit"
             type="submit"
             disabled={status === "sending"}
             className="btn btn-primary flex-1 disabled:opacity-60"
