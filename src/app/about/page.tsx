@@ -258,7 +258,13 @@ export default function AboutPage() {
                       : "bg-white/[0.06] ring-1 ring-white/10"
                   }`}
                 >
-                  <span className="font-mono text-[0.6875rem] tracking-[0.14em] text-white/45">
+                  {/* Brighter on the burgundy card: white/45 only clears AA
+                      against ink, not against burgundy. */}
+                  <span
+                    className={`font-mono text-[0.6875rem] tracking-[0.14em] ${
+                      i === 0 ? "text-white/70" : "text-white/45"
+                    }`}
+                  >
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <h3 className="h3 mt-4">{pillar.title}</h3>
@@ -430,8 +436,12 @@ export default function AboutPage() {
         <ul className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3">
           {galleryTeaser.map((item, i) => (
             <Reveal as="li" key={item.alt} delay={i * 80} className="block">
+              {/* Image-only links need a name describing the destination. Left to
+                  the portrait's alt, a screen reader announces the photo, not
+                  where the link goes. */}
               <Link
                 href="/gallery"
+                aria-label={`${item.caption ?? item.alt} — view the gallery`}
                 className="relative block aspect-[4/5] overflow-hidden rounded-[var(--radius-card)] bg-[color:var(--color-tint)]"
               >
                 {item.src ? (
