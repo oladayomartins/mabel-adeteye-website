@@ -417,12 +417,13 @@
       transform: scale(1);
       opacity: 0.45;
     }
+    /* 1.5 keeps the ring inside the 1rem gutter, so it never widens the page. */
     70% {
-      transform: scale(1.75);
+      transform: scale(1.5);
       opacity: 0;
     }
     100% {
-      transform: scale(1.75);
+      transform: scale(1.5);
       opacity: 0;
     }
   }

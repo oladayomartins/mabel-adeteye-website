@@ -58,7 +58,7 @@ export default function StickyRegisterBar({
   return (
     <div
       /* Right padding keeps the bar clear of the assistant launcher. */
-      className={`pointer-events-none fixed inset-x-0 bottom-0 z-40 p-4 pr-[4.75rem] transition-all duration-300 md:hidden ${
+      className={`pointer-events-none fixed inset-x-0 bottom-0 z-40 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] pr-[4.75rem] transition-all duration-300 md:hidden ${
         show ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
       }`}
     >

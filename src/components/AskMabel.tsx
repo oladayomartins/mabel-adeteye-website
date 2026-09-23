@@ -24,17 +24,73 @@ export default function AskMabel() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
+  /**
+   * On phones the panel is a full-screen sheet pinned to the *visual* viewport.
+   * iOS does not shrink the layout viewport (or `dvh`) when the keyboard opens,
+   * so a `bottom: 0` panel would sit behind the keyboard; tracking
+   * `visualViewport` keeps the input above it without the page jumping.
+   */
+  const [sheet, setSheet] = useState<{ top: number; height: number } | null>(null);
+
   const scroller = useRef<HTMLDivElement>(null);
   const field = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (open) field.current?.focus();
+    // Focusing on touch devices throws the keyboard up over the greeting and
+    // openers before the visitor has read them; let them tap in instead.
+    if (open && window.matchMedia("(pointer: fine)").matches) field.current?.focus();
   }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const phone = window.matchMedia("(max-width: 639px)");
+    const vv = window.visualViewport;
+    let frame = 0;
+
+    const measure = () => {
+      frame = 0;
+      setSheet(
+        phone.matches
+          ? { top: vv?.offsetTop ?? 0, height: vv?.height ?? window.innerHeight }
+          : null,
+      );
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+
+    measure();
+    phone.addEventListener("change", schedule);
+    vv?.addEventListener("resize", schedule);
+    vv?.addEventListener("scroll", schedule);
+    window.addEventListener("resize", schedule);
+
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      phone.removeEventListener("change", schedule);
+      vv?.removeEventListener("resize", schedule);
+      vv?.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [open]);
+
+  // The page behind a full-screen sheet must not scroll with it.
+  const locked = open && sheet !== null;
+  useEffect(() => {
+    if (!locked) return;
+    const root = document.documentElement;
+    const prev = root.style.overflow;
+    root.style.overflow = "hidden";
+    return () => {
+      root.style.overflow = prev;
+    };
+  }, [locked]);
 
   useEffect(() => {
     const el = scroller.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [messages, busy]);
+  }, [messages, busy, sheet?.height]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
@@ -97,7 +153,9 @@ export default function AskMabel() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls="ask-mabel-panel"
-        className={`fixed bottom-4 right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[color:var(--color-burgundy)] text-white shadow-[0_6px_28px_rgba(20,20,20,0.28)] ring-2 ring-white/70 transition-shadow hover:shadow-[0_10px_34px_rgba(107,18,32,0.42)] ${
+        className={`fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-50 h-14 w-14 ${
+          open ? "hidden sm:flex" : "flex"
+        } items-center justify-center rounded-full bg-[color:var(--color-burgundy)] text-white shadow-[0_6px_28px_rgba(20,20,20,0.28)] ring-2 ring-white/70 transition-shadow hover:shadow-[0_10px_34px_rgba(107,18,32,0.42)] ${
           open ? "" : "assistant-launcher"
         }`}
       >
@@ -132,16 +190,31 @@ export default function AskMabel() {
         hidden={!open}
         role="dialog"
         aria-label="Ask about Mabel"
-        className="fixed bottom-20 right-4 z-50 flex max-h-[min(70dvh,560px)] w-[min(calc(100vw-2rem),380px)] flex-col overflow-hidden rounded-[18px] border border-[color:var(--color-rule)] bg-white shadow-[0_18px_60px_rgba(20,20,20,0.18)]"
+        style={sheet ?? undefined}
+        className="fixed inset-x-0 top-0 z-[60] flex h-dvh flex-col overflow-hidden bg-white sm:inset-x-auto sm:top-auto sm:bottom-[calc(max(1rem,env(safe-area-inset-bottom))+4.5rem)] sm:right-4 sm:h-auto sm:max-h-[min(70dvh,560px)] sm:w-[380px] sm:rounded-[18px] sm:border sm:border-[color:var(--color-rule)] sm:shadow-[0_18px_60px_rgba(20,20,20,0.18)]"
       >
-        <div className="border-b border-[color:var(--color-rule)] bg-[color:var(--color-tint)] px-5 py-4">
-          <p className="eyebrow">Ask about Mabel</p>
-          <p className="mt-1 text-[0.8125rem] text-[color:var(--color-muted)]">
-            AI assistant · not Mabel herself
-          </p>
+        <div className="flex items-center justify-between gap-4 border-b border-[color:var(--color-rule)] bg-[color:var(--color-tint)] px-5 pb-4 pt-[max(1rem,env(safe-area-inset-top))] sm:pt-4">
+          <div className="min-w-0">
+            <p className="eyebrow">Ask about Mabel</p>
+            <p className="mt-1 text-[0.8125rem] text-[color:var(--color-muted)]">
+              AI assistant · not Mabel herself
+            </p>
+          </div>
+          {/* On phones the sheet covers the launcher, so it carries its own close. */}
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="-mr-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-2xl leading-none text-[color:var(--color-ink)] transition-colors hover:bg-white sm:hidden"
+          >
+            <span className="sr-only">Close assistant</span>
+            <span aria-hidden="true">×</span>
+          </button>
         </div>
 
-        <div ref={scroller} className="flex-1 space-y-4 overflow-y-auto px-5 py-5">
+        <div
+          ref={scroller}
+          className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain px-5 py-5"
+        >
           <p className="text-[0.875rem] leading-relaxed text-[color:var(--color-muted)]">
             {GREETING}
           </p>
@@ -152,7 +225,7 @@ export default function AskMabel() {
               className={m.role === "user" ? "flex justify-end" : "flex justify-start"}
             >
               <div
-                className={`max-w-[85%] rounded-[14px] px-4 py-3 text-[0.875rem] leading-relaxed ${
+                className={`max-w-[85%] whitespace-pre-wrap rounded-[14px] px-4 py-3 text-[0.875rem] leading-relaxed [overflow-wrap:anywhere] ${
                   m.role === "user"
                     ? "bg-[color:var(--color-burgundy)] text-white"
                     : "bg-[color:var(--color-tint)] text-[color:var(--color-ink)]"
@@ -197,7 +270,7 @@ export default function AskMabel() {
             e.preventDefault();
             send(input);
           }}
-          className="flex items-center gap-2 border-t border-[color:var(--color-rule)] p-3"
+          className="flex items-center gap-2 border-t border-[color:var(--color-rule)] p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pb-3"
         >
           <label htmlFor="ask-mabel-input" className="sr-only">
             Your question
@@ -209,12 +282,15 @@ export default function AskMabel() {
             onChange={(e) => setInput(e.target.value)}
             maxLength={600}
             placeholder="Ask a question…"
-            className="field !min-h-[44px] flex-1 !text-[0.875rem]"
+            enterKeyHint="send"
+            autoComplete="off"
+            /* 16px on phones: anything smaller makes iOS zoom the page on focus. */
+            className="field !min-h-[44px] min-w-0 flex-1 sm:!text-[0.875rem]"
           />
           <button
             type="submit"
             disabled={busy || !input.trim()}
-            className="btn btn-primary !min-h-[44px] !px-4 !text-sm disabled:opacity-40"
+            className="btn btn-primary !min-h-[44px] shrink-0 !px-4 !text-sm disabled:opacity-40"
           >
             Ask
           </button>
