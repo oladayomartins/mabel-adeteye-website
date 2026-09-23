@@ -381,6 +381,50 @@ export const education = [
  * none of those have been confirmed by Mabel. Add them here once they are, and
  * the page will pick them up (each entry supports an optional `meta` line).
  */
+/**
+ * MAA Insight Room — Mabel's own monthly mentorship platform.
+ *
+ * Every detail below is verified against the launch coverage (Tribune, Brand
+ * Icon Image, BusinessDay, Brand Communicator, Streamline Feed, August 2026).
+ * The timezone appears in none of those sources — it was confirmed directly by
+ * Mabel as Lagos / West African Time.
+ *
+ * `registerUrl` is intentionally empty: no public registration link exists in
+ * any source. While it is blank the page routes people to the enquiry form
+ * rather than inventing a destination. Fill it in and the button switches.
+ */
+export const insightRoom = {
+  name: "MAA Insight Room",
+  tagline:
+    "A monthly room for the thinking behind business and career decisions — not quick answers, not generic advice.",
+  schedule: "First Friday of every month",
+  time: "7:00 p.m. WAT (Lagos)",
+  cost: "Free to attend — registration required",
+  firstSession: "7 August 2026",
+  registerUrl: "",
+  audience: ["Professionals", "Founders", "Business leaders", "Emerging talents"],
+  topics: [
+    "Business strategy",
+    "Brand and executive communications",
+    "Leadership",
+    "Professional positioning",
+    "Organisational reputation",
+    "Marketing",
+  ],
+  howItWorks: [
+    "Register for the session — attendance is free.",
+    "Submit the questions and issues you want addressed when you register.",
+    "Access details arrive by email once you are registered.",
+    "Sessions are built around what participants actually brought.",
+  ],
+  quote:
+    "We live in a time where people have access to more information, more opinions, and more tools than ever before, but access does not automatically produce insight.",
+  source: {
+    label: "Tribune Online",
+    url: "https://tribuneonlineng.com/brand-expert-launches-leadership-platform-to-promote-conversations-on-business/",
+  },
+} as const;
+
 export type Track = { title: string; meta?: string; body: string; featured?: boolean };
 
 export const mentorshipTracks: Track[] = [

@@ -14,6 +14,7 @@ import {
   brands,
   education,
   heroSize,
+  insightRoom,
   memberships,
   orgUrls,
   person,
@@ -213,6 +214,40 @@ export const aboutFaqNode = {
       text: [entry.a, ...(entry.items ?? [])].filter(Boolean).join(" "),
     },
   })),
+};
+
+/**
+ * MAA Insight Room as a recurring EventSeries.
+ *
+ * `Schedule` expresses "first Friday monthly at 19:00 Africa/Lagos" precisely,
+ * which is what lets a search engine or assistant answer "when is the next
+ * session?" without parsing prose.
+ */
+export const insightRoomNode = {
+  "@type": "EventSeries",
+  "@id": `${SITE_URL}/mentorship#insight-room`,
+  name: insightRoom.name,
+  description: insightRoom.tagline,
+  url: `${SITE_URL}/mentorship#insight-room`,
+  organizer: { "@id": ID.person },
+  performer: { "@id": ID.person },
+  eventAttendanceMode: "https://schema.org/OnlineEventAttendanceMode",
+  eventStatus: "https://schema.org/EventScheduled",
+  isAccessibleForFree: true,
+  inLanguage: "en",
+  about: [...insightRoom.topics],
+  audience: {
+    "@type": "Audience",
+    audienceType: [...insightRoom.audience].join(", "),
+  },
+  eventSchedule: {
+    "@type": "Schedule",
+    repeatFrequency: "P1M",
+    byDay: "https://schema.org/Friday",
+    byMonthWeek: 1,
+    startTime: "19:00",
+    scheduleTimezone: "Africa/Lagos",
+  },
 };
 
 export const brandListNode = {

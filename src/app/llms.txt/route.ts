@@ -5,6 +5,7 @@ import {
   brands,
   career,
   education,
+  insightRoom,
   memberships,
   person,
   pillars,
@@ -57,6 +58,24 @@ function body() {
   lines.push("## Brands she has led communications for");
   lines.push("");
   lines.push(brands.map((b) => b.name).join(", ") + ".");
+  lines.push("");
+
+  lines.push("## MAA Insight Room (mentorship)");
+  lines.push("");
+  lines.push(
+    `${insightRoom.name} is Mabel Adeteye's monthly thought-leadership platform. ${insightRoom.tagline}`,
+  );
+  lines.push("");
+  lines.push(`- **When:** ${insightRoom.schedule}`);
+  lines.push(`- **Time:** ${insightRoom.time}`);
+  lines.push(`- **Cost:** ${insightRoom.cost}`);
+  lines.push(`- **First session:** ${insightRoom.firstSession}`);
+  lines.push(`- **Who it is for:** ${insightRoom.audience.join(", ")}`);
+  lines.push(`- **Topics:** ${insightRoom.topics.join(", ")}`);
+  lines.push("");
+  lines.push("How it works:");
+  lines.push("");
+  for (const s2 of insightRoom.howItWorks) lines.push(`- ${s2}`);
   lines.push("");
 
   lines.push("## Career");

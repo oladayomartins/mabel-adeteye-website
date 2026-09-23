@@ -4,14 +4,14 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import PageHeader from "@/components/PageHeader";
 import Reveal from "@/components/Reveal";
-import { ID, breadcrumbNode, graph, webPageNode } from "@/lib/schema";
+import { ID, breadcrumbNode, graph, insightRoomNode, webPageNode } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
-import { SITE_URL, faqs, mentorshipTracks, person, pillars } from "@/lib/site";
+import { SITE_URL, faqs, insightRoom, mentorshipTracks, person, pillars } from "@/lib/site";
 
 export const metadata = pageMetadata({
   title: "Mentorship",
   description:
-    "Mentorship, in-house training, masterclasses and advisory with Mabel Adeteye — Fate Foundation trainer, certified Speaker, Trainer and Communications Advisor, accredited with CIPR, NIPR, CIM and PRCA.",
+    "MAA Insight Room — free monthly sessions on the first Friday at 7pm WAT — plus one-to-one mentoring, in-house team training, workshops and advisory with Mabel Adeteye.",
   path: "/mentorship",
 });
 
@@ -63,6 +63,7 @@ export default function MentorshipPage() {
           breadcrumbNode(crumbs),
           serviceSchema,
           faqSchema,
+          insightRoomNode,
         ])}
       />
 
@@ -73,6 +74,107 @@ export default function MentorshipPage() {
         title="16 years of judgment, shared"
         lede="I mentor communications professionals and train teams — as a Fate Foundation trainer, a certified Speaker, Trainer and Communications Advisor, and a four-year member of the CIPR International Committee."
       />
+
+      {/* ---------------- MAA Insight Room ---------------- */}
+      <section
+        id="insight-room"
+        className="band band-ink mt-10 scroll-mt-24"
+        aria-labelledby="insight-heading"
+      >
+        <div className="shell">
+          <div className="grid gap-10 md:grid-cols-[1fr_320px] md:gap-16">
+            <div>
+              <p className="eyebrow text-[color:var(--color-accent)]">
+                Monthly · free to attend
+              </p>
+              <h2 id="insight-heading" className="h2 mt-3">
+                {insightRoom.name}
+              </h2>
+              <p className="lede mt-5 max-w-[52ch] !text-white/70">
+                {insightRoom.tagline}
+              </p>
+
+              <blockquote className="mt-8 border-l-2 border-[color:var(--color-accent)] pl-5 text-[0.9375rem] leading-relaxed text-white/80">
+                &ldquo;{insightRoom.quote}&rdquo;
+              </blockquote>
+
+              <h3 className="eyebrow mt-10 text-white/50">How it works</h3>
+              <ol className="mt-5 space-y-3">
+                {insightRoom.howItWorks.map((stepText, i) => (
+                  <li
+                    key={stepText}
+                    className="flex gap-4 text-[0.9375rem] leading-relaxed text-white/75"
+                  >
+                    <span className="font-mono text-[0.6875rem] tracking-[0.14em] text-[color:var(--color-accent)]">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    {stepText}
+                  </li>
+                ))}
+              </ol>
+
+              <h3 className="eyebrow mt-10 text-white/50">What it covers</h3>
+              <ul className="mt-5 flex flex-wrap gap-2">
+                {insightRoom.topics.map((topic) => (
+                  <li
+                    key={topic}
+                    className="chip !border-white/20 !text-white/70"
+                  >
+                    {topic}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="md:sticky-media self-start rounded-[var(--radius-card)] bg-white/[0.06] p-6 ring-1 ring-white/10">
+              <dl className="space-y-5">
+                {[
+                  { k: "When", v: insightRoom.schedule },
+                  { k: "Time", v: insightRoom.time },
+                  { k: "Cost", v: insightRoom.cost },
+                  { k: "Who it is for", v: insightRoom.audience.join(", ") },
+                ].map((row) => (
+                  <div key={row.k}>
+                    <dt className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-[color:var(--color-accent)]">
+                      {row.k}
+                    </dt>
+                    <dd className="mt-1.5 text-[0.9375rem] leading-relaxed text-white/85">
+                      {row.v}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+
+              {/* No public registration link exists yet, so this routes to the
+                  enquiry form rather than a guessed destination. */}
+              {insightRoom.registerUrl ? (
+                <a
+                  href={insightRoom.registerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-invert mt-7 w-full"
+                >
+                  Register for the next session
+                </a>
+              ) : (
+                <Link href="/bookings" className="btn btn-invert mt-7 w-full">
+                  Ask about the next session
+                </Link>
+              )}
+
+              <a
+                href={insightRoom.source.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-1.5 font-mono text-[0.625rem] uppercase tracking-[0.12em] text-white/40 transition-colors hover:text-white/70"
+              >
+                Source: {insightRoom.source.label}
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="shell section pt-10" aria-labelledby="formats-heading">
         <h2 id="formats-heading" className="h2">
