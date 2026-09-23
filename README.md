@@ -70,7 +70,10 @@ and the contact email. Change it there; the pages read from it.
 
 ## Home page sections
 
-1. Hero — animated backdrop, portrait, lead testimonial
+1. Hero — animated backdrop, portrait, lead testimonial. The `<section>` runs
+   **full width** so the backdrop bleeds to the viewport edges; the inner wrapper
+   holds the 1360px measure. Constrained to the content width, the backdrop's
+   wash and rings stop short on wide screens and leave bare strips either side.
 2. Brands I've worked with — logo wall
 3. What I do — ink band, seven pillar cards + accreditation strip
 4. **Selected work** — signature campaigns carousel, "See more" → About
@@ -98,7 +101,7 @@ The page alternates deliberately rather than stacking identical sections:
 | 7 | Recognitions & Credentials | Full-bleed **tint** band, list beside accordion |
 | 8 | Gallery teaser | Picture blocks with parallax, linking to /gallery |
 | 9 | FAQ | Sticky heading + accordion |
-| 10 | Testimonials | Full-bleed **ink** band, carousel |
+| 10 | Testimonials | Full-bleed **ink** band, featured quote |
 | 11 | CTA | Paper |
 
 ### Primitives
@@ -182,9 +185,15 @@ controls for carousels on an ink or burgundy band.
 match a brand name exactly. Campaigns with no logo (TVC) fall back to a
 typographic block rather than a placeholder image.
 
-**Testimonials** — cards are `self-start`, so each keeps its own height.
-Stretching them all to match the longest quote leaves a large void inside the
-short ones.
+**Testimonials** use `TestimonialFeature`, not the carousel. The quotes run from
+18 to 90 words, so a card row reads badly either way: equal heights leave voids,
+natural heights end raggedly (290px next to 631px). Showing one at a time lets
+each quote set at a readable size whatever its length.
+
+Every quote stays in the DOM — inactive ones are stacked in the same grid cell
+and hidden with `visibility`, never unmounted. That keeps all six crawlable, and
+makes the container as tall as the longest, so switching never shifts layout.
+The avatar rail doubles as the index and the control.
 
 ### No star ratings
 

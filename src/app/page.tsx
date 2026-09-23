@@ -6,7 +6,7 @@ import JsonLd from "@/components/JsonLd";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import Reveal from "@/components/Reveal";
 import ReviewerAvatar from "@/components/ReviewerAvatar";
-import TestimonialCarousel from "@/components/TestimonialCarousel";
+import TestimonialFeature from "@/components/TestimonialFeature";
 import { graph, webPageNode } from "@/lib/schema";
 import {
   assets,
@@ -34,11 +34,17 @@ export default function HomePage() {
       />
 
       {/* ---------------- Hero ---------------- */}
-      {/* Wider than the standard shell so the portrait can scale up without
-          crushing the rails either side of it. */}
-      <section className="relative isolate mx-auto w-full max-w-[1360px] px-5 pt-10 pb-4 md:px-10 md:pt-16">
+      {/*
+        The section runs full width so the backdrop can bleed to the viewport
+        edges — constrained to the content width, its wash and rings stop short
+        on wide screens and leave bare strips either side. The inner wrapper is
+        wider than the standard shell so the portrait can scale up without
+        crushing the rails beside it.
+      */}
+      <section className="relative isolate">
         <HeroBackdrop />
 
+        <div className="mx-auto w-full max-w-[1360px] px-5 pt-10 pb-4 md:px-10 md:pt-16">
         <div className="rise flex justify-center">
           <span className="chip chip-solid">Strategic PR &amp; Communications</span>
         </div>
@@ -132,6 +138,7 @@ export default function HomePage() {
             Invite me to speak
           </Link>
         </div>
+        </div>
       </section>
 
       {/* ---------------- Brands ---------------- */}
@@ -214,7 +221,7 @@ export default function HomePage() {
           </div>
 
           <div className="mt-10">
-            <TestimonialCarousel />
+            <TestimonialFeature />
           </div>
         </div>
       </section>

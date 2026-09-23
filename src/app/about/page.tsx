@@ -7,7 +7,7 @@ import CampaignCarousel from "@/components/CampaignCarousel";
 import JsonLd from "@/components/JsonLd";
 import Marquee from "@/components/Marquee";
 import Reveal from "@/components/Reveal";
-import TestimonialCarousel from "@/components/TestimonialCarousel";
+import TestimonialFeature from "@/components/TestimonialFeature";
 import {
   aboutFaqNode,
   breadcrumbNode,
@@ -504,7 +504,7 @@ export default function AboutPage() {
           </div>
 
           <div className="mt-10">
-            <TestimonialCarousel />
+            <TestimonialFeature />
           </div>
         </div>
       </section>
