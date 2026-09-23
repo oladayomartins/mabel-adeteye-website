@@ -61,9 +61,12 @@ export default function HomePage() {
 
         {/* Explicit centre track so the portrait is a known size rather than the
             result of a negotiation with the two rails either side of it. */}
-        <div className="mt-10 grid items-center gap-8 md:mt-14 md:grid-cols-[1fr_330px_1fr] md:gap-8 lg:grid-cols-[1fr_420px_1fr] lg:gap-10 xl:grid-cols-[1fr_620px_1fr] xl:gap-12 2xl:grid-cols-[1fr_660px_1fr]">
+        {/* Rails align to the top of the row, not its centre: centred against a
+            620px portrait they sank below the fold on shorter desktops, hiding
+            the Forbes/PR Power List line and the 16-year figure. */}
+        <div className="mt-10 grid items-center gap-8 md:mt-14 md:grid-cols-[1fr_330px_1fr] md:items-start md:gap-8 lg:grid-cols-[1fr_420px_1fr] lg:gap-10 xl:grid-cols-[1fr_620px_1fr] xl:gap-12 2xl:grid-cols-[1fr_660px_1fr]">
           {/* Left rail — desktop order 1, mobile below the portrait */}
-          <div className="rise order-2 md:order-1" style={{ animationDelay: "160ms" }}>
+          <div className="rise order-2 md:order-1 md:pt-6" style={{ animationDelay: "160ms" }}>
             <div className="border-l-2 border-[color:var(--color-burgundy)] pl-5">
               <p className="max-w-[28ch] text-[0.9375rem] leading-relaxed">
                 {person.tagline}
@@ -104,7 +107,7 @@ export default function HomePage() {
           </div>
 
           {/* Testimonial */}
-          <div className="rise order-3" style={{ animationDelay: "220ms" }}>
+          <div className="rise order-3 md:pt-6" style={{ animationDelay: "220ms" }}>
             <figure className="card md:ml-auto md:max-w-[300px] lg:max-w-[260px] xl:max-w-[290px]">
               {/* No star rating — these are written recommendations, not scored
                   reviews, so a rating would be invented. */}

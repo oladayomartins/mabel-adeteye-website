@@ -11,9 +11,10 @@ import { testimonials } from "@/lib/site";
  * equal-height cards leave voids and natural heights end raggedly. Showing one
  * at a time lets each quote set at a readable size regardless of length.
  *
- * Every quote stays in the DOM — inactive ones are stacked in the same grid cell
- * and hidden with `visibility`, not unmounted. That keeps all six crawlable and
- * makes the container as tall as the longest, so switching never shifts layout.
+ * Inactive quotes stay in the DOM (so all six remain crawlable) but are `hidden`,
+ * which takes them out of layout. Stacking them instead made the block as tall
+ * as the 90-word quote permanently — a lot of dead space under the short ones.
+ * A `min-height` absorbs most of the resulting variation.
  */
 export default function TestimonialFeature() {
   const [active, setActive] = useState(0);
@@ -23,31 +24,23 @@ export default function TestimonialFeature() {
 
   return (
     <div>
-      <div className="grid gap-10 md:grid-cols-[1fr_auto] md:items-end md:gap-14">
-        <div className="grid">
+      <div className="grid gap-7 md:grid-cols-[1fr_auto] md:items-end md:gap-14">
+        <div className="min-h-[188px] md:min-h-[210px]">
           {testimonials.map((t, i) => (
-            <figure
-              key={t.name}
-              className="col-start-1 row-start-1 transition-opacity duration-500"
-              style={{
-                opacity: i === active ? 1 : 0,
-                visibility: i === active ? "visible" : "hidden",
-              }}
-              aria-hidden={i === active ? undefined : true}
-            >
+            <figure key={t.name} hidden={i !== active}>
               <span
                 aria-hidden="true"
-                className="block font-serif text-[4rem] leading-[0.6] text-[color:var(--color-accent)]"
+                className="block font-serif text-[3rem] leading-[0.6] text-[color:var(--color-accent)]"
               >
                 &rdquo;
               </span>
 
-              <blockquote className="mt-6 max-w-[54ch] text-[1.0625rem] leading-relaxed text-white/90 md:text-[1.25rem] md:leading-[1.6]">
+              <blockquote className="mt-4 max-w-[58ch] text-[1.0625rem] leading-relaxed text-white/90 md:text-[1.1875rem] md:leading-[1.55]">
                 {t.quote}
               </blockquote>
 
-              <figcaption className="mt-7 flex items-center gap-3">
-                <ReviewerAvatar person={t} size={48} />
+              <figcaption className="mt-5 flex items-center gap-3">
+                <ReviewerAvatar person={t} size={44} />
                 <span className="font-mono text-[0.75rem] uppercase tracking-[0.12em] text-white/70">
                   {t.name}
                 </span>
@@ -78,7 +71,7 @@ export default function TestimonialFeature() {
       </div>
 
       {/* Avatar rail doubles as the index — who else has spoken, and the control. */}
-      <ul className="mt-10 flex flex-wrap gap-3 border-t border-white/10 pt-7">
+      <ul className="mt-8 flex flex-wrap gap-3 border-t border-white/10 pt-6">
         {testimonials.map((t, i) => (
           <li key={t.name}>
             <button
