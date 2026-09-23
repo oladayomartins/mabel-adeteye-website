@@ -13,6 +13,10 @@ import { useEffect, useState } from "react";
  * re-entry, leaving the bar stuck visible; for a single boolean derived from two
  * element positions, measuring directly is both cheaper to reason about and
  * reliable. The rAF guard means at most one measurement per frame.
+ *
+ * Once the visitor has started the form the bar has done its job and stays
+ * gone: shown mid-form (a step change or the phone keyboard can push the form
+ * out of view) it only pulls them back to the top of it.
  */
 export default function StickyRegisterBar({
   heroId,
@@ -27,6 +31,7 @@ export default function StickyRegisterBar({
 
   useEffect(() => {
     let frame = 0;
+    let engaged = false;
 
     const onScreen = (id: string) => {
       const el = document.getElementById(id);
@@ -37,19 +42,29 @@ export default function StickyRegisterBar({
 
     const measure = () => {
       frame = 0;
-      setShow(!onScreen(heroId) && !onScreen(formId));
+      setShow(!engaged && !onScreen(heroId) && !onScreen(formId));
     };
 
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(measure);
     };
 
+    const onFocus = (e: FocusEvent) => {
+      if (e.target instanceof Node && document.getElementById(formId)?.contains(e.target)) {
+        engaged = true;
+        document.removeEventListener("focusin", onFocus);
+        schedule();
+      }
+    };
+
     measure();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
+    document.addEventListener("focusin", onFocus);
 
     return () => {
       if (frame) cancelAnimationFrame(frame);
+      document.removeEventListener("focusin", onFocus);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };

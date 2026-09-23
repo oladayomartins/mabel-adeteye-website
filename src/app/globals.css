@@ -380,6 +380,18 @@
     border-color: var(--color-burgundy);
   }
 
+  .field[aria-invalid="true"] {
+    border-color: var(--color-burgundy);
+    background: var(--color-tint);
+  }
+
+  /* Anything a form scrolls to must clear the sticky header. */
+  form,
+  form fieldset,
+  .field {
+    scroll-margin-top: calc(var(--header-h) + 1.5rem);
+  }
+
   .rule {
     height: 1px;
     background: var(--color-rule);
