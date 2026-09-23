@@ -165,6 +165,40 @@ Note: the "Who am I?" paragraph from the source copy is deliberately **not** in
 the About FAQ. Her biography already opens that page, and repeating it a few
 hundred pixels below would be duplicate content on the same URL.
 
+## MAA Insight Room (`/insight-room`)
+
+Her monthly mentorship platform, with a registration form.
+
+**The page dates itself.** `src/lib/sessions.ts` computes sessions from the rule
+— first Friday, 19:00 `Africa/Lagos` — rather than storing a list, and the page
+sets `revalidate = 3600`. So "next session" is always current without a redeploy;
+a baked-in date would go stale the moment a session passed.
+
+Lagos is UTC+1 year-round with no daylight saving, so the offset is a constant.
+That is the one timezone simplification that is genuinely safe, and it avoids a
+date library for a single rule. Tested against the awkward cases: the hour before
+a session (still shows today), the minute after it starts (rolls forward), year
+boundaries, and months where the 1st *is* a Friday.
+
+Each upcoming date also emits its own `Event` node with `superEvent` pointing at
+the `EventSeries`, so assistants get a dated answer to "when is the next
+session?", not just a recurrence rule.
+
+### Registration form
+
+`InsightRoomForm` — three steps (About you · Your work · Your question) with a
+progress bar, card-style choices, per-step validation, and a live word counter
+enforcing the 30-word limit on the question. Posts to Web3Forms with the session
+date in the subject line.
+
+**One addition to the brief:** the age brackets stopped at 31–40, which would
+have locked out anyone over 40 — and the session is aimed at business leaders,
+who skew older. `41 and above` was added. Remove it from `AGE_BRACKETS` if the
+cut-off was deliberate.
+
+The Mentorship page carries a **promo only**; the detail and the form live here,
+so the two pages do not compete on the same content.
+
 ## Career timeline
 
 `career` in lib/site.ts, rendered on About. **Every entry carries a link to the

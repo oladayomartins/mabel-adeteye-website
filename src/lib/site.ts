@@ -125,6 +125,7 @@ export const nav = [
   { label: "Gallery", href: "/gallery" },
   { label: "Events", href: "/events" },
   { label: "Mentorship", href: "/mentorship" },
+  { label: "Insight Room", href: "/insight-room" },
   { label: "Press", href: "/press" },
   { label: "Bookings & Enquiries", href: "/bookings" },
 ] as const;

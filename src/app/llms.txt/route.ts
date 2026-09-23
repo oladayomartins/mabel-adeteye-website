@@ -73,6 +73,8 @@ function body() {
   lines.push(`- **Who it is for:** ${insightRoom.audience.join(", ")}`);
   lines.push(`- **Topics:** ${insightRoom.topics.join(", ")}`);
   lines.push("");
+  lines.push(`Register at ${SITE_URL}/insight-room — the page always shows the next date.`);
+  lines.push("");
   lines.push("How it works:");
   lines.push("");
   for (const s2 of insightRoom.howItWorks) lines.push(`- ${s2}`);
@@ -131,6 +133,7 @@ function body() {
   lines.push(`- [Gallery](${SITE_URL}/gallery): Photography from stages, panels, masterclasses and press.`);
   lines.push(`- [Events](${SITE_URL}/events): Keynotes, panels, workshops and masterclasses; upcoming and past.`);
   lines.push(`- [Mentorship](${SITE_URL}/mentorship): One-to-one mentoring, in-house team training, workshops and advisory.`);
+  lines.push(`- [MAA Insight Room](${SITE_URL}/insight-room): Free monthly session, first Friday at 7pm WAT. Dates and registration.`);
   lines.push(`- [Press](${SITE_URL}/press): Interviews, features and announcements in the business and trade press.`);
   lines.push(`- [Bookings & Enquiries](${SITE_URL}/bookings): Speaking, mentorship, media and other enquiries.`);
   lines.push("");
