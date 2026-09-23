@@ -55,6 +55,7 @@ export default function GalleryGrid({ items }: { items: GalleryItem[] }) {
                     fill
                     loading={i < 4 ? "eager" : "lazy"}
                     sizes="(max-width: 767px) 48vw, 33vw"
+                    style={item.focus ? { objectPosition: item.focus } : undefined}
                     className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                   />
                   {item.caption ? (

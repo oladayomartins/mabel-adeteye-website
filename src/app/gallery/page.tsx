@@ -11,7 +11,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Gallery",
   description:
-    "Stages, panels, masterclasses and press moments from Mabel Adeteye's work in strategic communications, brand management and public relations.",
+    "Studio and press portraits of Mabel Adeteye — Forbes Communications Council member and strategic communications expert.",
   path: "/gallery",
 });
 
@@ -40,8 +40,8 @@ export default function GalleryPage() {
 
       <PageHeader
         eyebrow="Gallery"
-        title="Stages, rooms and moments"
-        lede="Keynotes, panels, in-house masterclasses and press — a running record of the work."
+        title="Portraits"
+        lede="Studio and press portraits. Photography from stages, panels and masterclasses is being added."
       />
 
       <section className="shell section pt-8 md:pt-10">

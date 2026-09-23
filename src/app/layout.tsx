@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Loader from "@/components/Loader";
 import AskMabel from "@/components/AskMabel";
 import JsonLd from "@/components/JsonLd";
+import ScrollToTop from "@/components/ScrollToTop";
 import { baseGraph, brandListNode, graph } from "@/lib/schema";
 import { SITE_URL, assets, person } from "@/lib/site";
 import "./globals.css";
@@ -117,6 +118,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <ScrollToTop />
         <Loader />
         <AskMabel />
         <Header />

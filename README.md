@@ -63,8 +63,11 @@ and the contact email. Change it there; the pages read from it.
    supplied copy. Still outstanding:
    - **Events** — `upcomingEvents` and `pastEvents` are empty; the page renders
      graceful empty states until real dates are added.
-   - **Gallery** — one real image (the portrait) plus eight branded placeholder
-     tiles awaiting real event photography.
+   - **Gallery** — eight real studio/press portraits. There is still **no event
+     photography**, which is why the page says "Portraits" rather than promising
+     keynotes and panels. Add event images and reword the lede together.
+     Two sources are low-resolution (225x225 and 400x400) and will look soft in
+     a large cell — worth replacing if better originals exist.
    - **Mentorship terms** — formats are described without durations, response
      times, minimum terms or pricing, because none have been confirmed. Each
      entry in `mentorshipTracks` takes an optional `meta` line; fill it in and
@@ -479,6 +482,14 @@ The mobile drawer is rendered as a **sibling** of `<header>`, not a child: the
 header carries `backdrop-blur`, and an element with a backdrop-filter becomes the
 containing block for its `position: fixed` descendants — nested inside, the drawer
 resolved `bottom: 0` against the header box and collapsed to zero height.
+
+### Scroll position on load
+
+`ScrollToTop` sets `history.scrollRestoration = "manual"` and jumps to the top on
+mount. Browsers otherwise restore the previous offset on reload, so refreshing
+part-way down a long page drops you back into the middle of it — which reads as
+the site "loading from the bottom". A hash is respected, so
+`/insight-room#register` still lands on the form.
 
 ### Portrait blend
 

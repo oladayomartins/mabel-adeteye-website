@@ -664,6 +664,8 @@ export type GalleryItem = {
   /** True intrinsic size, so the lightbox reserves the right box. */
   width?: number;
   height?: number;
+  /** object-position for the grid crop, where centring cuts badly. */
+  focus?: string;
   alt: string;
   caption?: string;
   /** Placeholder tiles render as branded blocks until a real image is dropped in. */
@@ -672,23 +674,75 @@ export type GalleryItem = {
   tall?: boolean;
 };
 
+const GALLERY_CDN = "https://ik.imagekit.io/b492iukcb";
+
+/**
+ * Portrait gallery.
+ *
+ * These are all studio and press portraits — there is no event photography yet,
+ * which is why the page speaks about portraits rather than promising keynotes
+ * and panels it cannot show. Add event images here and reword the page lede.
+ */
 export const gallery: GalleryItem[] = [
   {
-    src: assets.hero,
-    width: heroSize.width,
-    height: heroSize.height,
-    alt: `${person.name} — editorial portrait`,
+    src: `${GALLERY_CDN}/PHOTO-2025-08-31-20-04-49%20(1).jpg`,
+    width: 720,
+    height: 1080,
+    alt: "Mabel Adeteye seated in a navy suit with feathered cuffs against a pale grey backdrop",
     caption: "Editorial portrait",
     tall: true,
   },
-  { alt: "Keynote appearance", caption: "Keynote", placeholder: true },
-  { alt: "Panel discussion", caption: "Panel", placeholder: true },
-  { alt: "In-house masterclass", caption: "Masterclass", placeholder: true, tall: true },
-  { alt: "Press interview", caption: "Press interview", placeholder: true },
-  { alt: "Leadership offsite", caption: "Leadership offsite", placeholder: true },
-  { alt: "Conference stage", caption: "Conference stage", placeholder: true },
-  { alt: "Team workshop", caption: "Team workshop", placeholder: true, tall: true },
-  { alt: "Awards evening", caption: "Awards evening", placeholder: true },
+  {
+    src: `${GALLERY_CDN}/Mabel%20.jpg`,
+    width: 1024,
+    height: 683,
+    alt: "Mabel Adeteye in a black outfit against a warm brown studio backdrop",
+    caption: "Studio portrait",
+  },
+  {
+    src: `${GALLERY_CDN}/Mabel%20photoshoot.jpg`,
+    width: 1080,
+    height: 711,
+    alt: "Mabel Adeteye leaning forward in a dark feathered jacket against a charcoal backdrop",
+    caption: "Photoshoot",
+  },
+  {
+    src: `${GALLERY_CDN}/Mabel-Adeteye-Headshot-e1723633885974.jpg`,
+    width: 768,
+    height: 641,
+    alt: "Mabel Adeteye in a white outfit against a brown studio backdrop",
+    caption: "Headshot",
+    tall: true,
+  },
+  {
+    src: `${GALLERY_CDN}/Mabel-Adeteye.png`,
+    width: 601,
+    height: 602,
+    alt: "Mabel Adeteye seated in a pale pink outfit, wearing glasses",
+    caption: "Portrait",
+  },
+  {
+    src: `${GALLERY_CDN}/WEB-13.jpg`,
+    width: 600,
+    height: 300,
+    focus: "center 35%",
+    alt: "Mabel Adeteye seated in a pale pink outfit against a brown backdrop",
+    caption: "Seated portrait",
+  },
+  {
+    src: `${GALLERY_CDN}/fMcJL5ZZ_400x400.jpg`,
+    width: 400,
+    height: 400,
+    alt: "Mabel Adeteye in a white outfit, hand to chin",
+    caption: "Profile portrait",
+  },
+  {
+    src: `${GALLERY_CDN}/images%20(2).jpeg`,
+    width: 225,
+    height: 225,
+    alt: "Mabel Adeteye at her desk in a magenta blazer",
+    caption: "At work",
+  },
 ];
 
 export type PressItem = {
