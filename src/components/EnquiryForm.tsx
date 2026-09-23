@@ -3,7 +3,12 @@
 import { useState } from "react";
 import { enquiryTopics, person } from "@/lib/site";
 
-const ENDPOINT = process.env.NEXT_PUBLIC_FORM_ENDPOINT ?? "";
+/**
+ * Web3Forms. The access key is public by design — it only authorises posting to
+ * this one form, and Web3Forms rate-limits it server side. Nothing sensitive.
+ */
+const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
+const ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY?.trim() ?? "";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -17,11 +22,12 @@ export default function EnquiryForm() {
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries());
 
-    // Honeypot — bots fill hidden fields, humans do not.
-    if (data.company) return;
+    // Honeypot — bots fill hidden fields, humans do not. Web3Forms rejects a
+    // filled `botcheck` server side too; this just saves the round trip.
+    if (data.botcheck) return;
 
-    if (!ENDPOINT) {
-      // No endpoint configured yet: hand off to the visitor's mail client so the
+    if (!ACCESS_KEY) {
+      // No access key configured: hand off to the visitor's mail client so the
       // form is never a dead end.
       const body = [
         `Topic: ${data.topic}`,
@@ -40,13 +46,41 @@ export default function EnquiryForm() {
 
     setStatus("sending");
     setError("");
+
     try {
-      const res = await fetch(ENDPOINT, {
+      const res = await fetch(WEB3FORMS_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          access_key: ACCESS_KEY,
+          // Capitalised keys because Web3Forms uses them as the labels in the
+          // notification email.
+          Topic: data.topic,
+          Name: data.name,
+          Organisation: data.organisation || "—",
+          Email: data.email,
+          Message: data.message,
+          subject: `${data.topic} enquiry from ${data.name} — mabeladeteye.com`,
+          from_name: "mabeladeteye.com",
+          replyto: data.email,
+          botcheck: "",
+        }),
       });
-      if (!res.ok) throw new Error(`Request failed (${res.status})`);
+
+      // Web3Forms answers 200 with { success: false } for a rejected key or a
+      // tripped spam rule, so the status code alone is not enough.
+      const result = (await res.json().catch(() => null)) as
+        | { success?: boolean; message?: string }
+        | null;
+
+      if (!res.ok || !result?.success) {
+        // Web3Forms' own messages are aimed at developers — "This method is not
+        // allowed. Use our API in client side..." helps nobody filling in a
+        // form. Log the detail, show the visitor something useful.
+        console.error("Web3Forms rejected the submission:", res.status, result);
+        throw new Error("We could not send that just now.");
+      }
+
       form.reset();
       setStatus("sent");
     } catch (err) {
@@ -144,10 +178,10 @@ export default function EnquiryForm() {
           className="field resize-y"
         />
 
-        {/* Honeypot */}
+        {/* Honeypot — `botcheck` is the name Web3Forms checks for. */}
         <input
-          type="text"
-          name="company"
+          type="checkbox"
+          name="botcheck"
           tabIndex={-1}
           autoComplete="off"
           aria-hidden="true"

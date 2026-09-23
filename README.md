@@ -48,9 +48,16 @@ and the contact email. Change it there; the pages read from it.
    paths. `metadataBase: new URL(SITE_URL)` runs at build time, so a malformed value
    fails the entire build rather than one page — a blank variable on the host took
    down a Vercel deploy exactly this way.
-2. **Set `NEXT_PUBLIC_FORM_ENDPOINT`** to a Formspree (or equivalent) endpoint. Until
-   it is set, the enquiry form falls back to opening the visitor's mail client
-   addressed to `person.email` — functional, but not ideal.
+2. **Set `NEXT_PUBLIC_WEB3FORMS_KEY`.** Get a key free at
+   [web3forms.com](https://web3forms.com) — enter the address that should receive
+   enquiries and it arrives by email. Free tier is 250 submissions/month. Until it
+   is set, the form falls back to opening the visitor's mail client addressed to
+   `person.email` — functional, but it loses anyone without a configured mail app.
+
+   The key is **public by design**: it only authorises posting to this one form and
+   Web3Forms rate-limits it server side. Note that the free plan accepts
+   **browser-originated requests only** — a server-side POST returns 403, so this
+   has to stay a client component.
 3. **Fill the remaining content gaps.** Biography, the seven pillars, recognitions,
    brands, testimonials, contact details and social links are all Mabel's own
    supplied copy. Still outstanding:
