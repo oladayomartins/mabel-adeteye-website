@@ -3,9 +3,34 @@
  * Everything Mabel is likely to want changed lives here, not in the components.
  */
 
-export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://mabeladeteye.com"
-).replace(/\/$/, "");
+const FALLBACK_SITE_URL = "https://mabeladeteye.com";
+
+/**
+ * Resolves the public origin.
+ *
+ * Deliberately defensive, because `metadataBase: new URL(SITE_URL)` runs at
+ * build time and throws on anything malformed — which fails the whole build,
+ * not just one page. Three cases that bit us or nearly did:
+ *
+ *  - **Empty string.** A host with the variable *defined but blank* is not
+ *    caught by `??`, which only falls back on null/undefined.
+ *  - **No protocol.** "mabeladeteye.com" is the obvious thing to paste into a
+ *    dashboard field, and `new URL()` rejects it.
+ *  - **Trailing slash or path.** `.origin` normalises both away.
+ */
+function resolveSiteUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (!raw) return FALLBACK_SITE_URL;
+
+  const withProtocol = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+  try {
+    return new URL(withProtocol).origin;
+  } catch {
+    return FALLBACK_SITE_URL;
+  }
+}
+
+export const SITE_URL = resolveSiteUrl();
 
 export const person = {
   name: "Mabel Adeteye Aladenusi",

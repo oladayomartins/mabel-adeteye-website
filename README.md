@@ -42,6 +42,12 @@ and the contact email. Change it there; the pages read from it.
 1. **Set `NEXT_PUBLIC_SITE_URL`** to the live domain (see `.env.example`). It drives
    canonical URLs, the sitemap, robots.txt, Open Graph tags and JSON-LD. The default
    placeholder is `https://mabeladeteye.com`.
+
+   `resolveSiteUrl()` in `lib/site.ts` is deliberately defensive: it falls back on a
+   blank value, adds a missing `https://`, and normalises away trailing slashes and
+   paths. `metadataBase: new URL(SITE_URL)` runs at build time, so a malformed value
+   fails the entire build rather than one page — a blank variable on the host took
+   down a Vercel deploy exactly this way.
 2. **Set `NEXT_PUBLIC_FORM_ENDPOINT`** to a Formspree (or equivalent) endpoint. Until
    it is set, the enquiry form falls back to opening the visitor's mail client
    addressed to `person.email` — functional, but not ideal.
