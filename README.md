@@ -243,6 +243,60 @@ February 2023 Wema Bank appointment — so the label reads "Seven years, to 2023
 rather than inventing a start date. Do not tighten these without a source that
 states the dates.
 
+## Site assistant (`/api/chat`)
+
+A grounded assistant that answers visitor questions about Mabel's professional
+life. Three parts: `lib/knowledge.ts` (grounding + system prompt),
+`app/api/chat/route.ts` (server-side call to Gemini), `components/AskMabel.tsx`
+(the widget).
+
+### It is not Mabel
+
+The assistant introduces itself as an AI assistant and is instructed never to
+claim to be her, write in her voice, or invent quotes. A site that blurs that
+line misleads visitors — particularly on the site of someone whose profession is
+reputation.
+
+### Grounding, not training
+
+No fine-tuning. `knowledgeBase()` assembles the verified content layer — bio,
+pillars, career, campaigns, recognitions, credentials, press, Insight Room dates
+— into the system prompt (~2,900 tokens). The assistant can therefore only state
+things already published and checked, and it cannot drift from the site because
+both read the same source.
+
+### Scope
+
+In scope: career, expertise, mentorship, Insight Room, speaking, bookings,
+credentials, press. Declined: family, relationships, religion, politics, health,
+personal finances, employer-internal matters, and requests to roleplay as her.
+
+Verified by testing, not assumption — it correctly refused marriage, religion
+and salary questions, declined to invent a mentoring fee, and pointed to
+/bookings instead. Note these guardrails are strong, **not absolute**: a
+determined prompt can sometimes move any model off-script. Re-test the refusals
+after changing the prompt.
+
+### The key is server-side
+
+`GEMINI_API_KEY` has **no** `NEXT_PUBLIC_` prefix, so Next cannot inline it into
+the bundle. It authorises billable calls and this repository is public. In Vercel
+it is type **Secret**. Without it the route returns 503.
+
+### Two operational notes
+
+**Free tier is ~5 requests per minute.** That is what the build hit during
+testing, and it is not enough for a public site — two visitors at once will trip
+it. Enable billing on the Google Cloud project before promoting the assistant.
+429s return a "handling a few questions at once" message rather than a failure.
+
+**`thinkingConfig.thinkingBudget: 0` is deliberate.** `gemini-3.6-flash` reasons
+before answering and bills those tokens; with a small output budget it returns
+*empty content*. For a grounded FAQ assistant the reasoning buys nothing.
+
+**Model ids retire quickly** — two 404'd mid-build with "no longer available".
+The error names the replacement; set `GEMINI_MODEL` rather than editing code.
+
 ## Carousels
 
 `src/components/Carousel.tsx` is the shared mechanism, used by

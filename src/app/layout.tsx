@@ -3,6 +3,7 @@ import { Archivo } from "next/font/google";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Loader from "@/components/Loader";
+import AskMabel from "@/components/AskMabel";
 import JsonLd from "@/components/JsonLd";
 import { baseGraph, brandListNode, graph } from "@/lib/schema";
 import { SITE_URL, assets, person } from "@/lib/site";
@@ -117,6 +118,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <Loader />
+        <AskMabel />
         <Header />
         <main id="main" className="flex-1">
           {children}
