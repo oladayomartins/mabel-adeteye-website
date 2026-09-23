@@ -318,8 +318,13 @@ is what makes the row line up. Fitting to a *box* rather than a fixed height als
 evens out optical weight — without a width cap, British Airways (6.5:1) would run
 five times wider than Etisalat (0.9:1).
 
-The grid uses 2 / 4 / 8 columns, all of which divide 8 evenly, so no row is ever
-left short.
+The grid uses 2 / 4 / 6 columns, all of which divide the **12** brands evenly, so
+no row is ever left short. Revisit those numbers whenever the count changes.
+
+Sources without transparency carry `flatBg: true` and render with
+`mix-blend-mode: darken`, which drops a near-white backdrop into our tint while
+leaving dark artwork untouched. Multiply would tint the whole cell; cropping
+alone still leaves a visible grey rectangle (Unilever sits on `#F0F0F0`).
 
 **To add a brand:** add it to `brandSources` with its file name and the bounding
 box of its artwork. To find the box:
@@ -331,7 +336,22 @@ print(im.getchannel("A").point(lambda v: 255 if v > 8 else 0).getbbox())
 # -> (x0, y0, x1, y1); crop is { x: x0, y: y0, w: x1-x0, h: y1-y0 }
 ```
 
-If a logo has no transparency, set `crop` to the full canvas.
+If a logo has no transparency, sample the corner pixel as the background and
+measure the box of pixels that differ from it — a plain white threshold misreads
+a light-grey backdrop as content and returns the whole canvas:
+
+```python
+from PIL import Image, ImageChops
+im = Image.open("logo.jpg").convert("RGB")
+bg = im.getpixel((0, 0))
+diff = ImageChops.difference(im, Image.new("RGB", im.size, bg)).convert("L")
+print(diff.point(lambda v: 255 if v > 18 else 0).getbbox())
+```
+
+**Cannes Lions is deliberately not in `brands`.** Mabel sat on its jury; she did
+not run its communications. Its logo belongs against the recognition entry, and
+putting it in a "brands I've worked with" wall would misrepresent that.
+`recognitions` takes an optional `logo` for exactly this case.
 
 ## Legacy URLs
 

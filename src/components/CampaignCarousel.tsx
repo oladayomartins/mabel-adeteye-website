@@ -30,7 +30,7 @@ export default function CampaignCarousel() {
                       fill
                       loading="lazy"
                       sizes="160px"
-                      className="object-contain"
+                      className={`object-contain ${logo.flatBg ? "mix-blend-darken" : ""}`}
                     />
                   </span>
                 ) : (

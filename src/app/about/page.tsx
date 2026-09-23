@@ -401,8 +401,20 @@ export default function AboutPage() {
                     <span className="font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-[color:var(--color-burgundy)]">
                       {item.year}
                     </span>
-                    <span className="text-[0.9375rem] font-medium leading-snug">
-                      {item.title}
+                    <span>
+                      {item.logo ? (
+                        <Image
+                          src={item.logo}
+                          alt=""
+                          width={260}
+                          height={112}
+                          sizes="112px"
+                          className="mb-2 h-7 w-auto opacity-70 mix-blend-multiply"
+                        />
+                      ) : null}
+                      <span className="block text-[0.9375rem] font-medium leading-snug">
+                        {item.title}
+                      </span>
                     </span>
                   </li>
                 ))}

@@ -158,6 +158,13 @@ type BrandSource = {
   file: string;
   /** Bounding box of the artwork within the source canvas. */
   crop: { x: number; y: number; w: number; h: number };
+  /**
+   * Set when the source has an opaque background rather than transparency.
+   * Rendered with `mix-blend-mode: darken`, which drops a near-white backdrop
+   * into our tint without touching the dark artwork — multiply would tint the
+   * whole cell, and cropping alone still leaves a visible grey rectangle.
+   */
+  flatBg?: boolean;
 };
 
 const brandSources: BrandSource[] = [
@@ -169,16 +176,21 @@ const brandSources: BrandSource[] = [
   { name: "Coca-Cola", file: "Coca-Cola-logo%20.png", crop: { x: 166, y: 505, w: 3555, h: 1165 } },
   { name: "Ford", file: "Ford_Motor_Company_Logo.svg.webp", crop: { x: 0, y: 0, w: 3840, h: 1439 } },
   { name: "Google", file: "Google_2015_logo.svg.webp", crop: { x: 5, y: 6, w: 3807, h: 1254 } },
+  { name: "Unilever", file: "unilever.jpg", crop: { x: 291, y: 48, w: 513, h: 568 }, flatBg: true },
+  { name: "Intel", file: "Intel_logo_(2006-2020).svg", crop: { x: 0, y: 0, w: 1005, h: 663 } },
+  { name: "Guinness Nigeria", file: "Guinness-Nigeria-Logo-header-2026.png", crop: { x: 0, y: 6, w: 294, h: 193 } },
+  { name: "TVC Communications", file: "TVC-Communications-Logo-with-Trademark.png", crop: { x: 0, y: 0, w: 2419, h: 584 } },
 ];
 
 /** Width served to the browser — comfortably above the 128px display box at 2x. */
 const BRAND_WIDTH = 320;
 
-export const brands = brandSources.map(({ name, file, crop }) => ({
+export const brands = brandSources.map(({ name, file, crop, flatBg }) => ({
   name,
   src: `${BRAND_CDN}/${file}?tr=cm-extract,x-${crop.x},y-${crop.y},w-${crop.w},h-${crop.h}:w-${BRAND_WIDTH}`,
   width: BRAND_WIDTH,
   height: Math.round((BRAND_WIDTH * crop.h) / crop.w),
+  flatBg: flatBg ?? false,
 }));
 
 export type Brand = (typeof brands)[number];
@@ -273,10 +285,19 @@ export const career = [
   },
 ] as const;
 
-export const recognitions = [
+/**
+ * `logo` is optional and belongs to the awarding body, not to Mabel. Cannes
+ * Lions is deliberately NOT in `brands` — she sat on its jury, she did not run
+ * its communications, and putting it in a "brands I've worked with" wall would
+ * misrepresent the relationship.
+ */
+export type Recognition = { year: string; title: string; logo?: string };
+
+export const recognitions: Recognition[] = [
   {
     year: "2026",
     title: "Jury Member, Cannes Lions International Festival of Creativity — Brand Experience & Activation",
+    logo: "https://ik.imagekit.io/b492iukcb/585698534f6ae202fedf2749.png?tr=w-260",
   },
   { year: "2026", title: "Jury Member, SABRE Awards Africa (PRovoke Media)" },
   { year: "2024", title: "Forbes Communications Council Member" },
@@ -288,7 +309,7 @@ export const recognitions = [
   { year: "2024", title: "Member — NIPR, CIPR, CIM, PRCA, IABC" },
   { year: "2024", title: "Speaker, Trainer and Communications Advisor" },
   { year: "2022", title: "Most Outstanding Corporate Comms Professional" },
-] as const;
+];
 
 /**
  * Testimonials.
@@ -586,11 +607,13 @@ export const campaigns: Campaign[] = [
   },
   {
     title: "Crisis communications, End SARS",
+    brand: "TVC Communications",
     sector: "Media — TVC Communications",
     tags: ["Crisis", "Reputation"],
   },
   {
     title: "Rebranding TVC Communications",
+    brand: "TVC Communications",
     sector: "Media — formerly Continental Broadcasting Services",
     tags: ["Rebrand", "Identity"],
   },

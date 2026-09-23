@@ -24,8 +24,9 @@ export default function BrandWall({
       <h2 id="brands-heading" className="eyebrow eyebrow-muted">
         {heading}
       </h2>
-      {/* 2 / 4 / 8 columns — all divide 8 evenly, so no row is ever left short. */}
-      <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 border-t border-[color:var(--color-rule)] pt-8 sm:grid-cols-4 lg:grid-cols-8">
+      {/* 2 / 4 / 6 columns — all divide the 12 brands evenly, so no row is ever
+          left short. Revisit these if the count changes. */}
+      <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 border-t border-[color:var(--color-rule)] pt-8 sm:grid-cols-4 lg:grid-cols-6">
         {brands.map((brand) => (
           <li key={brand.name} className="flex items-center justify-center">
             <span className="relative block h-10 w-[124px] md:w-[128px]">
@@ -35,7 +36,7 @@ export default function BrandWall({
                 fill
                 loading="lazy"
                 sizes="128px"
-                className="object-contain"
+                className={`object-contain ${brand.flatBg ? "mix-blend-darken" : ""}`}
               />
             </span>
           </li>

@@ -8,7 +8,9 @@ const ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY?.trim() ?? "";
 
 const QUESTION_WORD_LIMIT = 30;
 
-const GENDERS = ["Male", "Female"] as const;
+/** "Prefer not to say" added to the brief's Male/Female — a public professional
+ *  form should not force the answer. Remove it if that is deliberate. */
+const GENDERS = ["Male", "Female", "Prefer not to say"] as const;
 
 /**
  * "41 and above" is not in the brief, which stopped at 31–40. Without it anyone
@@ -296,6 +298,7 @@ export default function InsightRoomForm({ sessionLabel }: { sessionLabel: string
               options={GENDERS}
               value={values.gender}
               onChange={set("gender")}
+              columns={1}
               invalid={invalid("gender")}
             />
 
