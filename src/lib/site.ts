@@ -429,6 +429,15 @@ export const education = [
  *
  * Registration happens on /insight-room itself — that page is the destination
  * promoted on social, so there is no external sign-up link to store.
+ *
+ * `livestreamUrl` is the standing Riverside studio — the same room every month,
+ * so it lives here rather than per session.
+ *
+ * Riverside refuses to be framed (X-Frame-Options: SAMEORIGIN), so the player on
+ * /livestream needs a separate embeddable source. Riverside can multistream to
+ * YouTube Live, and `https://www.youtube.com/embed/live_stream?channel=<ID>`
+ * always plays that channel's current broadcast — a single permanent URL for a
+ * monthly show. Until it is set, /livestream links out to Riverside instead.
  */
 export const insightRoom = {
   name: "MAA Insight Room",
@@ -438,6 +447,8 @@ export const insightRoom = {
   time: "7:00 p.m. WAT (Lagos)",
   cost: "Free to attend — registration required",
   firstSession: "7 August 2026",
+  livestreamUrl: "https://riverside.com/studio/mabels-studio-1lax2",
+  livestreamEmbedUrl: "" as string,
   audience: ["Professionals", "Founders", "Business leaders", "Emerging talents"],
   topics: [
     "Business strategy",
@@ -450,7 +461,7 @@ export const insightRoom = {
   howItWorks: [
     "Register for the session — attendance is free.",
     "Submit the questions and issues you want addressed when you register.",
-    "Access details arrive by email once you are registered.",
+    "Watch live at /livestream — it opens an hour before the 7:00 p.m. WAT start.",
     "Sessions are built around what participants actually brought.",
   ],
   quote:

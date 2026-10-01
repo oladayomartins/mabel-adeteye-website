@@ -3,6 +3,7 @@ import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import InsightRoomForm from "@/components/InsightRoomForm";
 import JsonLd from "@/components/JsonLd";
+import LivestreamLink from "@/components/LivestreamLink";
 import StickyRegisterBar from "@/components/StickyRegisterBar";
 import Reveal from "@/components/Reveal";
 import { ID, breadcrumbNode, graph, insightRoomNode, webPageNode } from "@/lib/schema";
@@ -72,7 +73,7 @@ export default function InsightRoomPage() {
             isAccessibleForFree: true,
             location: {
               "@type": "VirtualLocation",
-              url: `${SITE_URL}/insight-room`,
+              url: `${SITE_URL}/livestream`,
             },
             organizer: { "@id": ID.person },
             performer: { "@id": ID.person },
@@ -93,6 +94,7 @@ export default function InsightRoomPage() {
       {/* ---------------- Next session ---------------- */}
       <header className="shell pt-8 md:pt-12">
         <div className="rise">
+          <LivestreamLink variant="banner" />
           {/* The banner is the masthead and the heading: its alt text is the h1,
               so the brand lockup and the semantics are the same element. */}
           <h1 className="max-w-[560px]">
@@ -136,7 +138,7 @@ export default function InsightRoomPage() {
               {[
                 { k: "Runs", v: insightRoom.schedule },
                 { k: "Cost", v: insightRoom.cost },
-                { k: "Format", v: "Online — access details on registration" },
+                { k: "Format", v: "Online — watch live on this site" },
               ].map((row) => (
                 <div key={row.k}>
                   <dt className="font-mono text-[0.625rem] uppercase tracking-[0.12em] text-[color:var(--color-accent)]">
@@ -149,9 +151,12 @@ export default function InsightRoomPage() {
               ))}
             </dl>
 
-            <a href="#register" className="btn btn-invert mt-8">
-              Register for this session
-            </a>
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+              <a href="#register" className="btn btn-invert">
+                Register for this session
+              </a>
+              <LivestreamLink />
+            </div>
 
             {later.length ? (
               <div className="mt-10 border-t border-white/12 pt-8">

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { focusNextField, reveal } from "@/lib/forms";
 import { person } from "@/lib/site";
@@ -254,9 +255,12 @@ export default function InsightRoomForm({ sessionLabel }: { sessionLabel: string
         <p className="eyebrow">You&rsquo;re registered</p>
         <h3 className="h2 mt-3">See you on {sessionLabel}</h3>
         <p className="mt-4 text-[0.9375rem] leading-relaxed text-[color:var(--color-muted)]">
-          Access details will arrive by email before the session. Your question goes into
-          the running order — the room is built around what participants actually bring.
+          Your question goes into the running order — the room is built around what
+          participants actually bring.
         </p>
+        <Link href="/livestream" className="btn btn-primary mt-6">
+          Watch live — save this link
+        </Link>
       </div>
     );
   }
