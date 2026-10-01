@@ -44,6 +44,40 @@ export function upcomingSessions(count = 4, now: Date = new Date()): Date[] {
   return sessions;
 }
 
+/** How long before the start the livestream opens. */
+export const LIVE_LEAD_MS = 60 * 60 * 1000;
+/** How long after the start a session is still treated as running. */
+export const LIVE_RUN_MS = 2 * 60 * 60 * 1000;
+
+/**
+ * The session that has not yet finished — the one running now, or else the
+ * next one. `upcomingSessions` drops a session the moment it starts, so this is
+ * what the livestream page counts down to and stays on while it runs.
+ */
+export function currentSession(now: Date = new Date()): Date {
+  return upcomingSessions(1, new Date(now.getTime() - LIVE_RUN_MS))[0];
+}
+
+export type LiveState = "waiting" | "open" | "live";
+
+/**
+ * "waiting" until an hour before the start, "open" for that hour (the player is
+ * up, counting down), "live" for two hours from the start.
+ */
+export function liveState(session: Date, now: Date = new Date()): LiveState {
+  const t = now.getTime();
+  const start = session.getTime();
+  if (t >= start) return "live";
+  if (t >= start - LIVE_LEAD_MS) return "open";
+  return "waiting";
+}
+
+/** The session currently live (from its start until two hours after), or null. */
+export function liveSession(now: Date = new Date()): Date | null {
+  const session = currentSession(now);
+  return liveState(session, now) === "live" ? session : null;
+}
+
 const LONG = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Africa/Lagos",
   weekday: "long",
